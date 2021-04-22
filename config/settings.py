@@ -142,3 +142,30 @@ REST_FRAMEWORK = {
 }
 
 ONE_API_BASE = "https://the-one-api.dev"
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+        },
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "sql.log",
+        },
+    },
+    "loggers": {
+        "django.db": {
+            "level": "DEBUG",
+            "handlers": ["file"],
+        },
+        "django.request": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+        },
+    },
+}

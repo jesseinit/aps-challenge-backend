@@ -1,11 +1,13 @@
 from typing import Dict
-from utils.exceptions import UnavailableResourceException
+
 import jwt
+import requests
 from django.conf import settings
-from userservice.models import User
 from rest_framework import serializers
 from rest_framework.response import Response
-import requests
+from userservice.models import User
+
+from utils.exceptions import UnavailableResourceException
 
 
 class TokenManager:
@@ -129,6 +131,29 @@ class OneAPIAdapter:
             return response.json()
         except Exception:
             raise UnavailableResourceException(dict(error=response.json()["message"]))
+
+    @classmethod
+    def retrieve_a_character(
+        cls,
+        limit: int = 1000,
+        page: int = 1,
+        api_token: str = None,
+        character_id: str = None,
+    ) -> Dict:
+        try:
+            response = requests.get(
+                url=cls.ONE_API_BASE + f"/v2/character/{character_id}",
+                params={"limit": limit, "page": page},
+                headers={"Authorization": f"Bearer {api_token}"},
+                timeout=5,
+            )
+            if not response.ok:
+                raise UnavailableResourceException(
+                    dict(error=response.json()["message"])
+                )
+            return response.json()
+        except Exception:
+            raise UnavailableResourceException()
 
     @classmethod
     def retrieve_character_quotes(
