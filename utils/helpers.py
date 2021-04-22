@@ -30,7 +30,7 @@ class FieldValidators:
     """ Custom Validators for Serializer Fields """
 
     @staticmethod
-    def validate_email(email):
+    def validate_existing_email(email):
         user_email = email.strip()
         user = User.objects.filter(email=user_email).exists()
         if user:
@@ -40,7 +40,7 @@ class FieldValidators:
         return user_email
 
     @staticmethod
-    def validate_username(username):
+    def validate_existing_username(username):
         user_username = username.strip()
         user = User.objects.filter(username=user_username).exists()
         if user:
@@ -48,6 +48,13 @@ class FieldValidators:
                 "A user has already registered with this username"
             )
         return user_username
+
+    @staticmethod
+    def validate_non_existing_email(email):
+        user = User.objects.filter(email=email).exists()
+        if not user:
+            raise serializers.ValidationError("This user does not exist")
+        return email
 
 
 class ResponseManager:
@@ -74,6 +81,25 @@ class OneAPIAdapter:
                     "email": email,
                     "password": password,
                     "passwordValidate": password,
+                },
+                timeout=5,
+            )
+            if not response.ok:
+                raise UnavailableResourceException(
+                    dict(error=response.json()["message"])
+                )
+            return response.json()
+        except Exception:
+            raise UnavailableResourceException(dict(error=response.json()["message"]))
+
+    @classmethod
+    def login_user(cls, email: str = None, password: str = None) -> Dict:
+        try:
+            response = requests.post(
+                url=cls.ONE_API_BASE + f"/auth/login",
+                json={
+                    "email": email,
+                    "password": password,
                 },
                 timeout=5,
             )

@@ -1,6 +1,6 @@
 from userservice.services import AuthenticationService
 from utils.helpers import ResponseManager
-from userservice.serializers import RegisterUserSerializer
+from userservice.serializers import LoginUserSerializer, RegisterUserSerializer
 
 # Create your views here.
 from rest_framework import viewsets
@@ -24,4 +24,19 @@ class AuthenticationViewset(viewsets.ViewSet):
         )
         return ResponseManager.handle_response(
             message="Registration Successful", data=service_response, status=201
+        )
+
+    @action(detail=False, methods=["post"], url_path="login")
+    def login_user(self, request):
+        """ View that handles account login """
+        serialized_data = LoginUserSerializer(data=request.data)
+        if not serialized_data.is_valid():
+            return ResponseManager.handle_response(
+                error=serialized_data.errors, status=400
+            )
+        service_response = AuthenticationService.login_user(
+            **serialized_data.data,
+        )
+        return ResponseManager.handle_response(
+            message="Login Successful", data=service_response, status=200
         )
