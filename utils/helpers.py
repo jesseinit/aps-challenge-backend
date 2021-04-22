@@ -110,3 +110,22 @@ class OneAPIAdapter:
             return response.json()
         except Exception:
             raise UnavailableResourceException(dict(error=response.json()["message"]))
+
+    @classmethod
+    def retrieve_characters(
+        cls, limit: int = 1000, page: int = 1, api_token: str = None
+    ) -> Dict:
+        try:
+            response = requests.get(
+                url=cls.ONE_API_BASE + f"/v2/character",
+                params={"limit": limit, "page": page},
+                headers={"Authorization": f"Bearer {api_token}"},
+                timeout=5,
+            )
+            if not response.ok:
+                raise UnavailableResourceException(
+                    dict(error=response.json()["message"])
+                )
+            return response.json()
+        except Exception:
+            raise UnavailableResourceException(dict(error=response.json()["message"]))

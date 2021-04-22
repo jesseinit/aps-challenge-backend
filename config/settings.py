@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "userservice.apps.UserserviceConfig",
+    "characterservice.apps.CharacterserviceConfig",
 ]
 
 MIDDLEWARE = [
