@@ -7,6 +7,7 @@ I chose to build this in Django because how its built-in authentication and auth
 ### Database:
 
 I chose SQLite be cause it was easy to setup and can fully offer the benefits(indexes, constraints etc) of mainstream relational DBMS. Another really important reason I went with it was its support for JSON fields which I used at some point in the project.
+Do note that this is only for local development. A configuratable environment variable has been added to change that to PostgreSQL on other environments as it more production grade and has got better scaling features.
 
 ### Serializer and Validation:
 
@@ -14,4 +15,6 @@ I used Django Rest Framework because the vaious toolkit it provides in quickly b
 
 ### Project Structure
 
-The projects was structured in a way that separates concerns
+The projects was structured in a way that separates concerns and provides high cohesion and minimal bloat.
+A request comes in through a view(view.py), then gets validated in the seriaizer(seriaizer.py), then the core operations happens in the service(service.py) file and its returned values gets sent back to the view which returns it to the client.
+The process makes use of various custom classes and utility methods to logically control the flow of requests with decent error handling especially those coming from 3rd party apis.
