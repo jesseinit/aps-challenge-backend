@@ -8,6 +8,7 @@ from utils.helpers import ResponseManager
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from characterservice.serializer import (
+    FavoriteCharacterQuoteSerializer,
     FavoriteCharacterSerializer,
     MyFavoritesSerializer,
 )
@@ -50,7 +51,38 @@ class CharacterViewset(viewsets.ViewSet):
         service_response = CharacterService.favourite_a_character(
             user=request.user,
             character_id=kwargs["id"],
-            favorite_status=serialized_data.data["is_character_favorited"],
+            favorite_status_meta=serialized_data.data["fav_status"],
+        )
+
+        return ResponseManager.handle_response(
+            message="Success", data=service_response, status=200
+        )
+
+    @action(
+        detail=False,
+        methods=["post"],
+        url_path="characters/(?P<character_id>[a-z0-9]+)/quotes/(?P<quote_id>[a-z0-9]+)/favorite",
+    )
+    def favorite_character_quote(self, request, **kwargs):
+        """ Favorite a character's quote"""
+        serialized_data = FavoriteCharacterQuoteSerializer(
+            data={
+                "character_id": kwargs["character_id"],
+                "quote_id": kwargs["quote_id"],
+            },
+            context={"user": request.user},
+        )
+
+        if not serialized_data.is_valid():
+            return ResponseManager.handle_response(
+                error=serialized_data.errors, status=400
+            )
+
+        service_response = CharacterService.favourite_a_character_quote(
+            user=request.user,
+            quote_id=kwargs["quote_id"],
+            character_id=kwargs["character_id"],
+            favorite_status_meta=serialized_data.data["fav_status"],
         )
 
         return ResponseManager.handle_response(

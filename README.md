@@ -41,4 +41,5 @@ The project has been built with the following technologies so far:
 
 - [Django](https://www.djangoproject.com/) - web framework for building websites using Python
 - [Django Rest Framework](https://www.django-rest-framework.org) - is a powerful and flexible toolkit for building Web APIs.
+- [PostgreSQL](https://www.postgresql.org/) - A production-ready relational database system emphasizing extensibility and technical standards compliance.
 - [SQLite](https://www.postgresql.org/) - Database management system used to persists the application's data.
