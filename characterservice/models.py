@@ -11,6 +11,7 @@ class Favorite(BaseAbstractModel):
 
     class Meta:
         db_table = "Favorite"
+        indexes = [models.Index(fields=["entry_id"])]
 
     user = models.ForeignKey(
         "userservice.User", on_delete=models.CASCADE, related_name="favorite_characters"
